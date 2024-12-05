@@ -41,8 +41,9 @@
       debug:
         msg: "Tor Browser version {{ tor_version }} is already installed at {{ install_path }}. No changes made."
       when: current_version_check.stat.exists
-      tags: skip_remaining
-      notify: End play
+
+    - meta: end_play
+      when: current_version_check.stat.exists
 
   tasks:
     - name: Install required dependencies
@@ -117,7 +118,3 @@
       file:
         path: /tmp/tor-browser.tar.xz
         state: absent
-
-  handlers:
-    - name: End play
-      meta: end_play

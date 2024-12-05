@@ -20,6 +20,8 @@ If the user says no, or the file does not exist, the user's choices will be coll
 
 There's no reason that the installation scripts can't be run individually, however, if you don't wish to run the whole shebang.
 
+Each script and associated playbook makes some attempt to be idempotent, and to permit rational and user-friendly things like not updating SSH keys unecessarily.
+
 ### Caveat 1
 The scripts and playbooks are written assuming that they'll be executed against localhost; while the playbooks should work for execution against other hosts, I've not gotten around to testing that yet.
 ### Caveat 2

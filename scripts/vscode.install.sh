@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Description: Install VSCode on Ubuntu
 #
 # Example: ./vscode.install.sh

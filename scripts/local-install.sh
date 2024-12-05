@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Description: Install base working environment on Ubuntu localhost
 #
 # Example: local-install.sh

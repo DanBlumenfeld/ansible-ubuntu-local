@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Description: Install Tor on Ubuntu
 #
 # Variables:

@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# Function to check if a variable is set
+# Description: Function to check if a variable is set
+#
+# Usage: include via `source ./util/validate_variables.sh`, call via `check_variable "user" "$1"`
+
 check_variable() {
     local var_name=$1
     local var_value=$2

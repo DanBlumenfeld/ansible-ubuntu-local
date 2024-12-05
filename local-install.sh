@@ -4,13 +4,14 @@
 #
 # Example: local-install.sh
 
-CONFIG_FILE="config.env"
+SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+CONFIG_FILE="$SCRIPT_DIR/config.env"
 
 # Check if the config file exists
 if [ -f "$CONFIG_FILE" ]; then
-    echo "A configuration file ($CONFIG_FILE) already exists. Do you want to use it? (y/n)"
+    echo "A configuration file ($CONFIG_FILE) already exists. Do you want to use it? (yes/no)"
     read use_existing_config
-    if [[ "$use_existing_config" == "y" ]]; then
+    if [[ "$use_existing_config" == "yes" ]]; then
         # Load saved variables
         source "$CONFIG_FILE"
     else
@@ -43,16 +44,16 @@ else
 fi
 
 # Make sure scripts are executable
-find ./ -type f -name "*.sh" -exec chmod +x {} \;
+find "$SCRIPT_DIR/scripts" -type f -name "*.sh" -exec chmod +x {} \;
 
 # Set up Ansible
-./ansible.install.sh
+"$SCRIPT_DIR/scripts/ansible.install.sh"
 
 # Configure Git and Github
-./git.config.sh $user $git_user_name $git_user_email
+"$SCRIPT_DIR/scripts/git.config.sh" "$user" "$git_user_name" "$git_user_email"
 
 # Install Tor
-./tor.install.sh $user
+"$SCRIPT_DIR/scripts/tor.install.sh" "$user"
 
 # Install VS Code
-./vscode.install.sh
+"$SCRIPT_DIR/scripts/vscode.install.sh"

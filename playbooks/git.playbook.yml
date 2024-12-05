@@ -79,7 +79,7 @@
           Content-Type: "application/json"
         body: |
           {
-            "title": "Ansible-generated SSH key for {{ git_user_email }} on {{ ansible_hostname }}",
+            "title": "Ansible-generated SSH key for {{ git_user_email }} on {{ ansible_hostname }} at {{ ansible_date_time.date }} {{ ansible_date_time.time }}",
             "key": "{{ public_key_content.stdout_lines[0] }}"
           }
         body_format: json

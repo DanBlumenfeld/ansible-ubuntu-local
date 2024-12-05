@@ -17,8 +17,7 @@ read git_user_email
 ./ansible.install.sh
 
 # Configure Git and Github
-# ./git.config.sh $user $git_user_name $git_user_email
-./git.config.sh dan "Dan Blumenfeld" "dan@danieljblumenfeld.com"
+./git.config.sh $user $git_user_name $git_user_email
 
 # Install Tor
 ./tor.install.sh

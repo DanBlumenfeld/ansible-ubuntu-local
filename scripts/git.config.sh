@@ -14,7 +14,8 @@ source $SCRIPT_DIR/util/validate_variables.sh # Variable checking
 
 echo "To generate a new Github PAT, click the following link to open the Github token settings page"
 echo "https://github.com/settings/tokens/new?description=ansible%20setup%20token&scopes=admin:ssh_signing_key,admin:public_key"
-echo "Change the expiry to 7 days; then create the token, copy it and input below:"
+echo "Change the expiry to 7 days; then create the token, copy it and input below."
+echo "If you enter no token, whatever SSH key is already in place will be left unchanged"
 echo -n "Enter github Personal Access Token:"
 read -s token
 echo ""
@@ -22,6 +23,5 @@ echo ""
 check_variable "user" "$1"
 check_variable "git_user_name" "$2"
 check_variable "git_user_email" "$3"
-check_variable "Github Personal Access Token" "$token"
 
 sudo ansible-playbook $SCRIPT_DIR/../playbooks/git.playbook.yml --extra-vars "user='$1' git_user_name='$2' git_user_email='$3' GH_TOKEN=$token"

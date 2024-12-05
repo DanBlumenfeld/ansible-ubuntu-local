@@ -25,6 +25,25 @@
         mode: '0700'
         owner: "{{ user }}"
         group: "{{ user }}"
+ 
+    - name: Configure Git user
+      ansible.builtin.git_config:
+        name: user.name
+        value: "{{ git_user_name }}"
+
+    - name: Configure Git email
+      ansible.builtin.git_config:
+        name: user.email
+        value: "{{ git_user_email }}"
+    
+    - name: Display message if Github Token is empty
+      debug:
+        msg: "No Github token was supplied, so no changes will be made to whatever SSH keys (if any) are currently in use."
+      when: GH_TOKEN is not defined or GH_TOKEN | length == 0
+
+    - name: End play if Github Token is empty
+      meta: end_play
+      when: GH_TOKEN is not defined or GH_TOKEN | length == 0
 
     - name: Delete existing SSH key if it exists
       ansible.builtin.file:
@@ -59,16 +78,6 @@
     - name: Display public SSH key
       ansible.builtin.debug:
         msg: "{{ public_key_content.stdout_lines[0] }}"
-
-    - name: Configure Git user
-      ansible.builtin.git_config:
-        name: user.name
-        value: "{{ git_user_name }}"
-
-    - name: Configure Git email
-      ansible.builtin.git_config:
-        name: user.email
-        value: "{{ git_user_email }}"
 
     - name: Upload public SSH key to Github
       ansible.builtin.uri:

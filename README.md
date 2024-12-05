@@ -9,17 +9,19 @@ $ cd dev
 $ sudo apt update
 $ sudo apt install git
 $ git clone https://github.com/DanBlumenfeld/ansible-ubuntu-local.git
-$ cd ansible-ubuntu-local/scripts
 $ ./local-install.sh
 ```
 
 `local-install.sh` collects required information from the user, then executes the individual installation scripts sequentially.
 Each subordinate script then invokes the matching Ansible playbook.
 
-(There's no reason that the installation scripts can't be run individually, however.)
+`local-install.sh` checks for trhe presence of a `local-install.config.env` file, and prompts the user to use it if so. 
+If the user says no, or the file does not exist, the user's choices will be collected as normal, and will be saved to the `local-install.config.env` file for future use.
+
+There's no reason that the installation scripts can't be run individually, however, if you don't wish to run the whole shebang.
 
 ### Caveat 1
-The scripts and playbooks are written assuming that they'll be executed against localhost; while it shouldn't be hard to add options for Ansible execution against other hosts, I've not gotten around to it yet.
+The scripts and playbooks are written assuming that they'll be executed against localhost; while the playbooks should work for execution against other hosts, I've not gotten around to testing that yet.
 ### Caveat 2
 I'm an utter Ansible novice, and not terribly well versed with shell scripting either, so I suspect there are innumerable worst practices on display here. Please feel free to submit suggestions for improvement via email or PR.
 

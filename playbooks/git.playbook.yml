@@ -57,20 +57,17 @@
 
     - name: Display public SSH key
       ansible.builtin.debug:
-        msg: "{{ public_key_content.stdout }}"
+        msg: "{{ public_key_content.stdout_lines[0] }}"
 
     - name: Configure Git user
       ansible.builtin.git_config:
         name: user.name
         value: "{{ git_user_name }}"
-        scope: global
 
     - name: Configure Git email
       ansible.builtin.git_config:
         name: user.email
         value: "{{ git_user_email }}"
-        scope: global
-        
 
     - name: Upload public SSH key to Github
       ansible.builtin.uri:
@@ -81,8 +78,8 @@
           Content-Type: "application/json"
         body: |
           {
-            "title": "Ansible-generated SSH key for {{ git_user_email }}",
-            "key": "{{ public_key_content.stdout }}"
+            "title": "Ansible-generated SSH key for {{ git_user_email }} on {{ ansible_hostname }}",
+            "key": "{{ public_key_content.stdout_lines[0] }}"
           }
         body_format: json
         status_code: 201        

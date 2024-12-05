@@ -15,8 +15,11 @@ echo -n "Enter github Personal Access Token:"
 read -s token
 
 check_variable "user" "$1"
+echo "User: $1"
 check_variable "git_user_name" "$2"
+echo "Git User Name: $2"
 check_variable "git_user_email" "$3"
+echo "Git User Email: $3"
 check_variable "Github Personal Access Token" "$token"
 
-sudo ansible-playbook ../playbooks/git.playbook.yml --extra-vars "user='$1' git_user_name='$2' git_user_email='$3' GH_TOKEN=$4"
+sudo ansible-playbook ../playbooks/git.playbook.yml --extra-vars "user='$1' git_user_name='$2' git_user_email='$3' GH_TOKEN=$token"

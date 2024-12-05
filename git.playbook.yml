@@ -1,0 +1,68 @@
+# Description: This playbook configures Git with user, email, and an SSH key
+# Variables:
+#   user               local user to have Git configured
+#   private_key_path   path to the SSH private key to be used. Can be absolute (e.g. /path/to/key) or relative to the current working directory
+#   git_user_name      username for Git user
+#   git_user_email     email address for Git user
+#
+# Example usage: sudo ansible-playbook ./git.playbook.yml --extra-vars "user=myuser private_key_path=relative/path/to/key git_user_name=myuser git_user_email=myemail@example.com"
+
+- name: Install Git and configure SSH
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Install Git
+      ansible.builtin.apt:
+        name: git
+        state: present
+        update_cache: yes
+
+    - name: Check if the source SSH private key exists
+      stat:
+        path: "{{ private_key_path }}"
+      register: src_key_status
+
+    - name: Fail if the source key does not exist
+      fail:
+        msg: "The SSH private key at '{{ ssh_key_path }}' does not exist. Please create it manually or specify the correct path."
+      when: not src_key_status.stat.exists
+  
+    - name: Create SSH directory
+      ansible.builtin.file:
+        path: "~/.ssh"
+        state: directory
+        mode: '0700'
+
+    - name: Copy SSH private key
+      ansible.builtin.copy:
+        src: "{{private_key_path}}"
+        dest: "/home/{{ user }}/.ssh/id_rsa"
+        mode: '0600'
+        remote_src: no
+        
+    - name: Set ownership of key
+      file:
+        path: '/home/{{ user }}/.ssh/id_rsa'
+        owner: '{{ user }}'
+
+    - name: Add SSH key to ssh-agent
+      ansible.builtin.shell: |
+        eval "$(ssh-agent -s)"
+        ssh-add /home/{{ user }}/.ssh/id_rsa
+      args:
+        executable: /bin/bash
+
+    - name: Configure Git user
+      ansible.builtin.git_config:
+        name: user.name
+        value: "{{git_user_name}}"
+
+    - name: Configure Git email
+      ansible.builtin.git_config:
+        name: user.email
+        value: "{{git_user_email}}"
+
+    - name: Set Git to use SSH for GitHub
+      ansible.builtin.git_config:
+        name: url.git@github.com:.insteadOf
+        value: "https://github.com/"

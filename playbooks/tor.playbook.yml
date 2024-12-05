@@ -1,0 +1,72 @@
+# Description: This playbook installs Tor on Ubuntu
+# Variables:
+#   user     user for whom to install Tor
+#
+# Example:   sudo ansible-playbook ./tor.playbook.yml --extra-vars "user=myuser"
+
+- name: Install Tor Browser on Ubuntu
+  hosts: localhost
+  become: yes
+  vars:
+    install_path: "/home/{{ user }}/tor14.0.3"
+  tasks:
+    - name: Install required dependencies
+      apt:
+        name:
+          - wget
+          - tar
+        state: present
+        
+    - name: Retrieve destination path
+      debug:
+        msg: "the destination path is {{ install_path }}."
+        
+    - name: Create Tor Browser directory
+      file:
+        path: '{{ install_path }}'
+        state: directory
+        mode: '0755'
+
+    - name: Download Tor Browser tarball
+      get_url:
+        url: https://dist.torproject.org/torbrowser/14.0.3/tor-browser-linux-x86_64-14.0.3.tar.xz
+        dest: /tmp/tor-browser.tar.xz
+        mode: '0644'
+  
+    - name: Extract Tor Browser tarball
+      unarchive:
+        src: /tmp/tor-browser.tar.xz
+        dest: '{{ install_path }}'
+        remote_src: yes
+
+    - name: Set permissions for Tor Browser
+      file:
+        path: '{{ install_path }}/tor-browser'
+        state: directory
+        mode: '0755'
+        recurse: yes
+        
+    - name: Change ownership of Tor Browser
+      file:
+        path: '{{ install_path }}'
+        owner: '{{ user }}'
+        recurse: yes
+        
+
+    - name: Create Tor Browser desktop shortcut
+      copy:
+        dest: /usr/share/applications/tor-browser.desktop
+        content: |
+          [Desktop Entry]
+          Name=Tor Browser
+          Exec={{ install_path }}/tor-browser/Browser/start-tor-browser
+          Terminal=false
+          Type=Application
+          Icon={{ install_path }}/tor-browser/Browser/browser/chrome/icons/default/default128.png
+          Categories=Network;Security;Privacy;
+        mode: '0644'
+        
+    - name: Clean up temporary files
+      file:
+        path: /tmp/tor-browser.tar.xz
+        state: absent

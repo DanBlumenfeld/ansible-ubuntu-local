@@ -32,6 +32,16 @@
         msg: "The specified user '{{ user }}' does not exist on this system."
       when: user_check.rc != 0
 
+    - name: Check if the current Tor version is already installed
+      stat:
+        path: "{{ install_path }}"
+      register: current_version_check
+
+    - name: Exit playbook if the current version is already installed
+      fail:
+        msg: "Tor Browser version {{ tor_version }} is already installed at {{ install_path }}."
+      when: current_version_check.stat.exists
+
   tasks:
     - name: Install required dependencies
       apt:
@@ -47,20 +57,15 @@
         file_type: directory
       register: prior_tor_versions
 
-    - name: Filter out the current Tor version from prior installations
-      set_fact:
-        prior_versions_filtered: "{{ prior_tor_versions.files | selectattr('path', '!=', install_path) | list }}"
-
     - name: List prior Tor installations
       debug:
-        msg: "Found prior installations (excluding the current version): {{ prior_versions_filtered | map(attribute='path') | list | join(', ') }}"
-      when: prior_versions_filtered | length > 0
+        msg: "Found prior installations: {{ prior_tor_versions.files | map(attribute='path') | list | join(', ') }}"
+      when: prior_tor_versions.matched > 0
 
     - name: Remove existing desktop shortcut if it exists
       file:
         path: "{{ desktop_shortcut }}"
         state: absent
-      when: prior_versions_filtered | length > 0
 
     - name: Recreate desktop shortcut for the new version
       copy:

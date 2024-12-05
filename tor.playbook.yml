@@ -2,7 +2,7 @@
 # Variables:
 #   user     user for whom to install Tor
 #
-# Example:   sudo ansible-playbook ./playbook_tor.yml --extra-vars "user=myuser"
+# Example:   sudo ansible-playbook ./tor.playbook.yml --extra-vars "user=myuser"
 
 - name: Install Tor Browser on Ubuntu
   hosts: localhost

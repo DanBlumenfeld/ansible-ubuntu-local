@@ -37,10 +37,12 @@
         path: "{{ install_path }}"
       register: current_version_check
 
-    - name: Exit playbook if the current version is already installed
-      fail:
-        msg: "Tor Browser version {{ tor_version }} is already installed at {{ install_path }}."
+    - name: Exit playbook successfully if the current version is already installed
+      debug:
+        msg: "Tor Browser version {{ tor_version }} is already installed at {{ install_path }}. No changes made."
       when: current_version_check.stat.exists
+      tags: skip_remaining
+      notify: End play
 
   tasks:
     - name: Install required dependencies
@@ -67,7 +69,7 @@
         path: "{{ desktop_shortcut }}"
         state: absent
 
-    - name: Recreate desktop shortcut for the new version
+    - name: Create desktop shortcut
       copy:
         dest: "{{ desktop_shortcut }}"
         content: |
@@ -108,10 +110,14 @@
     - name: Change ownership of Tor Browser
       file:
         path: '{{ install_path }}'
-        owner: '{{ user }}'
+        owner: '{{ user }}' 
         recurse: yes
 
     - name: Clean up temporary files
       file:
         path: /tmp/tor-browser.tar.xz
         state: absent
+
+  handlers:
+    - name: End play
+      meta: end_play

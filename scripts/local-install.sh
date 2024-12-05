@@ -20,7 +20,7 @@ read git_user_email
 ./git.config.sh $user $git_user_name $git_user_email
 
 # Install Tor
-./tor.install.sh
+./tor.install.sh $user
 
 # Install VS Code
 ./vscode.install.sh

@@ -25,6 +25,16 @@
         owner: "{{ user }}"
         group: "{{ user }}"
 
+    - name: Delete existing SSH key if it exists
+      ansible.builtin.file:
+        path: "/home/{{ user }}/.ssh/id_rsa"
+        state: absent
+
+    - name: Delete existing SSH public key if it exists
+      ansible.builtin.file:
+        path: "/home/{{ user }}/.ssh/id_rsa.pub"
+        state: absent
+
     - name: Generate SSH key
       ansible.builtin.shell: |
         ssh-keygen -t rsa -b 4096 -C "{{ git_user_email }}" -f "/home/{{ user }}/.ssh/id_rsa" -N ""

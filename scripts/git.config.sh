@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Description: Configure Git and Github
 #
 # Variables:

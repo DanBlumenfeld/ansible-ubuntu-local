@@ -50,28 +50,27 @@
         group: '{{ user }}'
         mode: '0600'
 
-    - name: Add SSH key to ssh-agent
-      ansible.builtin.shell: |
-        eval "$(ssh-agent -s)"
-        ssh-add /home/{{ user }}/.ssh/id_rsa
-      args:
-        executable: /bin/bash
-      become_user: "{{ user }}"
+    - name: Read public SSH key
+      ansible.builtin.command:
+        cmd: cat /home/{{ user }}/.ssh/id_rsa.pub
+      register: public_key_content
+
+    - name: Display public SSH key
+      ansible.builtin.debug:
+        msg: "{{ public_key_content.stdout }}"
 
     - name: Configure Git user
       ansible.builtin.git_config:
         name: user.name
         value: "{{ git_user_name }}"
+        scope: global
 
     - name: Configure Git email
       ansible.builtin.git_config:
         name: user.email
         value: "{{ git_user_email }}"
-
-    - name: Set Git to use SSH for GitHub
-      ansible.builtin.git_config:
-        name: url.git@github.com:.insteadOf
-        value: "https://github.com/"
+        scope: global
+        
 
     - name: Upload public SSH key to Github
       ansible.builtin.uri:
@@ -83,7 +82,21 @@
         body: |
           {
             "title": "Ansible-generated SSH key for {{ git_user_email }}",
-            "key": "{{ lookup('file', '/home/' + user + '/.ssh/id_rsa.pub') }}"
+            "key": "{{ public_key_content.stdout }}"
           }
         body_format: json
-        status_code: 201
+        status_code: 201        
+
+    - name: Set Git to use SSH for GitHub
+      ansible.builtin.git_config:
+        name: url.git@github.com:.insteadOf
+        value: "https://github.com/" 
+        scope: global
+
+    - name: Add SSH key to ssh-agent
+      ansible.builtin.shell: |
+        eval "$(ssh-agent -s)"
+        ssh-add /home/{{ user }}/.ssh/id_rsa
+      args:
+        executable: /bin/bash
+      become_user: "{{ user }}"

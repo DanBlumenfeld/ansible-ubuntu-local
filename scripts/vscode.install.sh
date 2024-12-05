@@ -1,6 +1,10 @@
+#!/bin/bash
+
 # Description: Install VSCode on Ubuntu
 #
 # Example: ./vscode.install.sh
 
-sudo ansible-galaxy install -r ../playbooks/vscode.requirements.yml
-sudo ansible-playbook ../playbooks/vscode.playbook.yml
+SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+
+sudo ansible-galaxy install -r $SCRIPT_DIR/../playbooks/vscode.requirements.yml
+sudo ansible-playbook $SCRIPT_DIR/../playbooks/vscode.playbook.yml

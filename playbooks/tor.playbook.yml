@@ -1,14 +1,50 @@
 # Description: This playbook installs Tor on Ubuntu
 # Variables:
-#   user     user for whom to install Tor
+#   user         Ubuntu user for whom to install Tor
+#   tor_version  Tor Browser version to install
 #
-# Example:   sudo ansible-playbook ./tor.playbook.yml --extra-vars "user=myuser"
+# Example on localhost:   sudo ansible-playbook ./tor.playbook.yml --extra-vars "user=myuser"
+# Example on localhost with specific version of Tor:   sudo ansible-playbook ./tor.playbook.yml --extra-vars "user=myuser tor_version=14.0.3"
+# Example on remote host:   sudo ansible-playbook ./tor.playbook.yml --extra-vars "user=myuser target_host=myremotehost"
 
-- name: Install Tor Browser on Ubuntu
-  hosts: localhost
+- name: Install Tor Browser
+  hosts: "{{ target_host | default('localhost') }}"
   become: yes
   vars:
-    install_path: "/home/{{ user }}/tor14.0.3"
+    tor_version: "14.0.3"
+    install_path: "/home/{{ user }}/tor{{ tor_version }}"
+    tor_url: "https://dist.torproject.org/torbrowser/{{ tor_version }}/tor-browser-linux-x86_64-{{ tor_version }}.tar.xz"
+    desktop_shortcut: "/usr/share/applications/tor-browser.desktop"
+  pre_tasks:
+    - name: Ensure 'user' variable is defined
+      fail:
+        msg: "The 'user' variable is not defined. Please provide it using --extra-vars 'user=<username>'."
+      when: user is not defined
+
+    - name: Check if the specified user exists
+      command: id -u {{ user }}
+      register: user_check
+      failed_when: user_check.rc != 0
+      changed_when: false
+
+    - name: Ensure the specified user exists
+      fail:
+        msg: "The specified user '{{ user }}' does not exist on this system."
+      when: user_check.rc != 0
+
+    - name: Check if the current Tor version is already installed
+      stat:
+        path: "{{ install_path }}"
+      register: current_version_check
+
+    - name: Exit playbook successfully if the current version is already installed
+      debug:
+        msg: "Tor Browser version {{ tor_version }} is already installed at {{ install_path }}. No changes made."
+      when: current_version_check.stat.exists
+
+    - meta: end_play
+      when: current_version_check.stat.exists
+
   tasks:
     - name: Install required dependencies
       apt:
@@ -16,11 +52,37 @@
           - wget
           - tar
         state: present
-        
-    - name: Retrieve destination path
+
+    - name: Check if a prior Tor installation exists
+      find:
+        paths: "/home/{{ user }}"
+        patterns: "tor*"
+        file_type: directory
+      register: prior_tor_versions
+
+    - name: List prior Tor installations
       debug:
-        msg: "the destination path is {{ install_path }}."
-        
+        msg: "Found prior installations: {{ prior_tor_versions.files | map(attribute='path') | list | join(', ') }}"
+      when: prior_tor_versions.matched > 0
+
+    - name: Remove existing desktop shortcut if it exists
+      file:
+        path: "{{ desktop_shortcut }}"
+        state: absent
+
+    - name: Create desktop shortcut
+      copy:
+        dest: "{{ desktop_shortcut }}"
+        content: |
+          [Desktop Entry]
+          Name=Tor Browser
+          Exec={{ install_path }}/tor-browser/Browser/start-tor-browser
+          Terminal=false
+          Type=Application
+          Icon={{ install_path }}/tor-browser/Browser/browser/chrome/icons/default/default128.png
+          Categories=Network;Security;Privacy;
+        mode: '0644'
+
     - name: Create Tor Browser directory
       file:
         path: '{{ install_path }}'
@@ -29,10 +91,10 @@
 
     - name: Download Tor Browser tarball
       get_url:
-        url: https://dist.torproject.org/torbrowser/14.0.3/tor-browser-linux-x86_64-14.0.3.tar.xz
+        url: '{{ tor_url }}'
         dest: /tmp/tor-browser.tar.xz
         mode: '0644'
-  
+
     - name: Extract Tor Browser tarball
       unarchive:
         src: /tmp/tor-browser.tar.xz
@@ -45,27 +107,13 @@
         state: directory
         mode: '0755'
         recurse: yes
-        
+
     - name: Change ownership of Tor Browser
       file:
         path: '{{ install_path }}'
-        owner: '{{ user }}'
+        owner: '{{ user }}' 
         recurse: yes
-        
 
-    - name: Create Tor Browser desktop shortcut
-      copy:
-        dest: /usr/share/applications/tor-browser.desktop
-        content: |
-          [Desktop Entry]
-          Name=Tor Browser
-          Exec={{ install_path }}/tor-browser/Browser/start-tor-browser
-          Terminal=false
-          Type=Application
-          Icon={{ install_path }}/tor-browser/Browser/browser/chrome/icons/default/default128.png
-          Categories=Network;Security;Privacy;
-        mode: '0644'
-        
     - name: Clean up temporary files
       file:
         path: /tmp/tor-browser.tar.xz

@@ -5,10 +5,11 @@
 #   git_user_email     email address for Git user
 #   GH_TOKEN           PAT for adding SSH key to Github
 #
-# Example usage: sudo ansible-playbook ./git.playbook.yml --extra-vars "user=myuser git_user_name=myuser git_user_email=myemail@example.com GH_TOKEN=[token from Github]"
+# Example usage against localhost: sudo ansible-playbook ./git.playbook.yml --extra-vars "user=myuser git_user_name=myuser git_user_email=myemail@example.com GH_TOKEN=[token from Github]"
+# Example usage against remote host: sudo ansible-playbook ./git.playbook.yml --extra-vars "user=myuser git_user_name=myuser git_user_email=myemail@example.com GH_TOKEN=[token from Github] target_host=[remote host]"
 
 - name: Install Git and configure SSH for Github
-  hosts: localhost
+  hosts: "{{ target_host | default('localhost') }}"
   become: yes
   tasks:
     - name: Install Git

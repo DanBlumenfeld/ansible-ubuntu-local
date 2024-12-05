@@ -5,7 +5,7 @@
 # Example: local-install.sh
 
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-CONFIG_FILE="$SCRIPT_DIR/config.env"
+CONFIG_FILE="$SCRIPT_DIR/local-install.config.env"
 
 # Check if the config file exists
 if [ -f "$CONFIG_FILE" ]; then

@@ -64,14 +64,11 @@
       ansible.builtin.git_config:
         name: user.name
         value: "{{ git_user_name }}"
-        scope: global
 
     - name: Configure Git email
       ansible.builtin.git_config:
         name: user.email
         value: "{{ git_user_email }}"
-        scope: global
-        
 
     - name: Upload public SSH key to Github
       ansible.builtin.uri:
@@ -92,7 +89,6 @@
       ansible.builtin.git_config:
         name: url.git@github.com:.insteadOf
         value: "https://github.com/" 
-        scope: global
 
     - name: Add SSH key to ssh-agent
       ansible.builtin.shell: |

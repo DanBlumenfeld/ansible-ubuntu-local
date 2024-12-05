@@ -17,10 +17,11 @@ echo "https://github.com/settings/tokens/new?description=ansible%20setup%20token
 echo "Change the expiry to 7 days; then create the token, copy it and input below:"
 echo -n "Enter github Personal Access Token:"
 read -s token
+echo ""
 
 check_variable "user" "$1"
 check_variable "git_user_name" "$2"
 check_variable "git_user_email" "$3"
 check_variable "Github Personal Access Token" "$token"
 
-sudo ansible-playbook $SCRIPT_DIR/../playbooks/git.playbook.yml --extra-vars "user='$1' git_user_name='$2' git_user_email='$3' GH_TOKEN=$4"
+sudo ansible-playbook $SCRIPT_DIR/../playbooks/git.playbook.yml --extra-vars "user='$1' git_user_name='$2' git_user_email='$3' GH_TOKEN=$token"

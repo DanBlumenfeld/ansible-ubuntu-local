@@ -1,0 +1,4 @@
+# The file used to preserve user choices in the local-install.sh
+local-install.config.env 
+
+.vscode/

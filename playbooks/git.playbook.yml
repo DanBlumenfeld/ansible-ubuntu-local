@@ -88,7 +88,6 @@
       ansible.builtin.git_config:
         name: url.git@github.com:.insteadOf
         value: "https://github.com/" 
-        scope: global
 
     - name: Add SSH key to ssh-agent
       ansible.builtin.shell: |

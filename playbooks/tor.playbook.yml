@@ -47,16 +47,20 @@
         file_type: directory
       register: prior_tor_versions
 
+    - name: Filter out the current Tor version from prior installations
+      set_fact:
+        prior_versions_filtered: "{{ prior_tor_versions.files | selectattr('path', '!=', install_path) | list }}"
+
     - name: List prior Tor installations
       debug:
-        msg: "Found prior installations: {{ prior_tor_versions.files | map(attribute='path') | list | join(', ') }}"
-      when: prior_tor_versions.matched > 0
+        msg: "Found prior installations (excluding the current version): {{ prior_versions_filtered | map(attribute='path') | list | join(', ') }}"
+      when: prior_versions_filtered | length > 0
 
     - name: Remove existing desktop shortcut if it exists
       file:
         path: "{{ desktop_shortcut }}"
         state: absent
-      when: prior_tor_versions.matched > 0
+      when: prior_versions_filtered | length > 0
 
     - name: Recreate desktop shortcut for the new version
       copy:
@@ -82,7 +86,7 @@
         url: '{{ tor_url }}'
         dest: /tmp/tor-browser.tar.xz
         mode: '0644'
-  
+
     - name: Extract Tor Browser tarball
       unarchive:
         src: /tmp/tor-browser.tar.xz
@@ -95,13 +99,13 @@
         state: directory
         mode: '0755'
         recurse: yes
-        
+
     - name: Change ownership of Tor Browser
       file:
         path: '{{ install_path }}'
         owner: '{{ user }}'
         recurse: yes
-        
+
     - name: Clean up temporary files
       file:
         path: /tmp/tor-browser.tar.xz

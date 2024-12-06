@@ -8,9 +8,17 @@
 #   git_user_name  Name to be added to git config
 # Example: git.config.sh
 
-SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+source $SCRIPT_DIR/util/validate_variables.sh 
 
-source $SCRIPT_DIR/util/validate_variables.sh # Variable checking
+USER="$1"
+GIT_USER_NAME="$2"
+GIT_USER_EMAIL="$3"
+
+check_variable "user" "$USER"
+check_variable "git_user_name" "$GIT_USER_NAME"
+check_variable "git_user_email" "$GIT_USER_EMAIL"
+
+SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 
 echo "To generate a new Github PAT, click the following link to open the Github token settings page"
 echo "https://github.com/settings/tokens/new?description=ansible%20setup%20token&scopes=admin:ssh_signing_key,admin:public_key"
@@ -20,8 +28,4 @@ echo -n "Enter github Personal Access Token:"
 read -s token
 echo ""
 
-check_variable "user" "$1"
-check_variable "git_user_name" "$2"
-check_variable "git_user_email" "$3"
-
-sudo ansible-playbook $SCRIPT_DIR/../playbooks/git.playbook.yml --extra-vars "user='$1' git_user_name='$2' git_user_email='$3' GH_TOKEN=$token"
+sudo ansible-playbook $SCRIPT_DIR/../playbooks/git.playbook.yml --extra-vars "user='$USER' git_user_name='$GIT_USER_NAME' git_user_email='$GIT_USER_EMAIL' GH_TOKEN=$token"

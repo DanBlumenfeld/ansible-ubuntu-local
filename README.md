@@ -33,7 +33,14 @@ Sublime Text https://www.sublimetext.com/docs/linux_repositories.html#apt, https
 Sublime Merge https://www.sublimemerge.com/docs/linux_repositories#apt
 Docker https://github.com/cyberhck/ansible-ubuntu/blob/master/docker.yml
 DevToys https://devtoys.app/download
-Lock down/harden system
+npm
+Screen capture tool TBD
+GIMP
+Lock down/harden system TBD
+Look for way to set Tor Browser as system default
+Separate/optional packages:
+ - Fujitsu ScanSnap
+ - Brother QL-700
 
 ## Tools used
 [Ansible](https://www.ansible.com/) does most of the heavy lifting

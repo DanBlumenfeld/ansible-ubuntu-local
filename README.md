@@ -28,8 +28,6 @@ The scripts and playbooks are written assuming that they'll be executed against 
 I'm an utter Ansible novice, and not terribly well versed with shell scripting either, so I suspect there are innumerable worst practices on display here. Please feel free to submit suggestions for improvement via email or PR.
 
 ## Next Steps
-1Password https://support.1password.com/install-linux/#debian-or-ubuntu
-1Password CLI https://developer.1password.com/docs/cli/get-started/#install
 1Password for VS Code https://developer.1password.com/docs/vscode
 Sublime Text https://www.sublimetext.com/docs/linux_repositories.html#apt, https://stackoverflow.com/questions/46835369/ansible-to-install-sublime-text-editor-in-linux
 Sublime Merge https://www.sublimemerge.com/docs/linux_repositories#apt

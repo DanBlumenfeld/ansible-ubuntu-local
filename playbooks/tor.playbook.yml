@@ -70,19 +70,6 @@
         path: "{{ desktop_shortcut }}"
         state: absent
 
-    - name: Create desktop shortcut
-      copy:
-        dest: "{{ desktop_shortcut }}"
-        content: |
-          [Desktop Entry]
-          Name=Tor Browser
-          Exec={{ install_path }}/tor-browser/Browser/start-tor-browser
-          Terminal=false
-          Type=Application
-          Icon={{ install_path }}/tor-browser/Browser/browser/chrome/icons/default/default128.png
-          Categories=Network;Security;Privacy;
-        mode: '0644'
-
     - name: Create Tor Browser directory
       file:
         path: '{{ install_path }}'
@@ -118,3 +105,19 @@
       file:
         path: /tmp/tor-browser.tar.xz
         state: absent
+
+    - name: Create desktop shortcut
+      copy:
+        dest: "{{ desktop_shortcut }}"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=Tor Browser
+          GenericName=Web Browser
+          Comment=Tor Browser  is +1 for privacy and −1 for mass surveillance
+          Categories=Network;WebBrowser;Security;
+          Exec={{ install_path }}/tor-browser/Browser/start-tor-browser
+          Icon={{ install_path }}/tor-browser/Browser/browser/chrome/icons/default/default128.png
+          X-TorBrowser-ExecShell={{ install_path }}/tor-browser/Browser/start-tor-browser --detach
+          StartupWMClass=Tor Browser
+        mode: '0644'

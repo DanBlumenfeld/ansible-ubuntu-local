@@ -57,3 +57,6 @@ find "$SCRIPT_DIR/scripts" -type f -name "*.sh" -exec chmod +x {} \;
 
 # Install VS Code
 "$SCRIPT_DIR/scripts/vscode.install.sh"
+
+# Install 1Password
+"$SCRIPT_DIR/scripts/1password.install.sh"

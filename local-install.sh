@@ -66,3 +66,6 @@ find "$SCRIPT_DIR/scripts" -type f -name "*.sh" -exec chmod +x {} \;
 
 # Install Sublime Merge
 "$SCRIPT_DIR/scripts/sublime.merge.install.sh"
+
+# Install Docker
+"$SCRIPT_DIR/scripts/docker.install.sh"

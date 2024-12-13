@@ -28,7 +28,6 @@ The scripts and playbooks are written assuming that they'll be executed against 
 I'm an utter Ansible novice, and not terribly well versed with shell scripting either, so I suspect there are innumerable worst practices on display here. Please feel free to submit suggestions for improvement via email or PR.
 
 ## Next Steps
-npm
 Settings sync for Sublime Text and Merge
 Screen capture tool TBD
 GIMP

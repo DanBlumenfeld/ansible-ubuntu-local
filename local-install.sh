@@ -73,3 +73,6 @@ find "$SCRIPT_DIR/scripts" -type f -name "*.sh" -exec chmod +x {} \;
 # Install DevToys
 # Disabled until DevToys runs happily on Ubunutu
 # "$SCRIPT_DIR/scripts/devtoys.install.sh"
+
+# Install node and npm
+"$SCRIPT_DIR/scripts/npm.install.sh"

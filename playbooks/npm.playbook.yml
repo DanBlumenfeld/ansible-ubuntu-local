@@ -1,0 +1,22 @@
+# Description: This playbook installs node and npm on Ubuntu
+#
+# Example usage against localhost: sudo ansible-playbook ./npm.playbook.yml
+# Example usage against remote host: sudo ansible-playbook ./npm.playbook.yml --extra-vars "target_host=[remote host]"
+
+- name: Install Node and npm
+  hosts: "{{ target_host | default('localhost') }}"
+  become: true
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install node
+      apt:
+        name: nodejs
+        state: present
+
+    - name: Install npm
+      apt:
+        name: npm
+        state: present

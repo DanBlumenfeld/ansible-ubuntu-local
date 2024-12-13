@@ -29,8 +29,7 @@ I'm an utter Ansible novice, and not terribly well versed with shell scripting e
 
 ## Next Steps
 1Password for VS Code https://developer.1password.com/docs/vscode
-Sublime Text https://www.sublimetext.com/docs/linux_repositories.html#apt, https://stackoverflow.com/questions/46835369/ansible-to-install-sublime-text-editor-in-linux
-Sublime Merge https://www.sublimemerge.com/docs/linux_repositories#apt
+Settings sync for Sublime Text and Merge
 Docker https://github.com/cyberhck/ansible-ubuntu/blob/master/docker.yml
 DevToys https://devtoys.app/download
 npm
@@ -38,7 +37,8 @@ Screen capture tool TBD
 GIMP
 Lock down/harden system TBD
 Look for way to set Tor Browser as system default
-Separate/optional packages:
+
+Separate/optional packages, not part of default install
  - Fujitsu ScanSnap
  - Brother QL-700
 

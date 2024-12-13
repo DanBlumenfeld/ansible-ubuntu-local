@@ -60,3 +60,9 @@ find "$SCRIPT_DIR/scripts" -type f -name "*.sh" -exec chmod +x {} \;
 
 # Install 1Password
 "$SCRIPT_DIR/scripts/1password.install.sh"
+
+# Install Sublime Text
+"$SCRIPT_DIR/scripts/sublime.text.install.sh"
+
+# Install Sublime Merge
+"$SCRIPT_DIR/scripts/sublime.merge.install.sh"

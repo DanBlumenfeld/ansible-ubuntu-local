@@ -2,7 +2,7 @@
 
 # Description: Install docker and docker-compose on Ubuntu
 #
-# Example: ./sdocker.install.sh 
+# Example: ./docker.install.sh 
 
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 

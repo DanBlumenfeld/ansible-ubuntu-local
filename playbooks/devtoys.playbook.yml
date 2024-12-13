@@ -1,0 +1,24 @@
+# Description: This playbook installs Devtools on Ubuntu
+#
+# Example usage against localhost: sudo ansible-playbook ./devtools.playbook.yml
+# Example usage against remote host: sudo ansible-playbook ./devtools.playbook.yml --extra-vars "target_host=[remote host]"
+
+- name: Install docker
+  hosts: "{{ target_host | default('localhost') }}"
+  become: true
+  tasks:
+    - name: Download DevToys .deb package
+      get_url:
+        url: https://github.com/DevToys-app/DevToys/releases/download/v2.0.8.0/devtoys_linux_x64.deb
+        dest: /tmp/devtoys_linux_x64.deb
+        mode: '0644'
+
+    - name: Install DevToys .deb package
+      apt:
+        deb: /tmp/devtoys_linux_x64.deb
+        state: present
+
+    - name: Remove downloaded .deb file
+      file:
+        path: /tmp/devtoys_linux_x64.deb
+        state: absent

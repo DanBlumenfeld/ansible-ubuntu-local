@@ -1,7 +1,7 @@
 # Description: This playbook installs docker and docker-compose on Ubuntu
 #
 # Example usage against localhost: sudo ansible-playbook ./docker.playbook.yml
-# Example usage against remote host: sudo ansible-playbook ./dockerplaybook.yml --extra-vars "target_host=[remote host]"
+# Example usage against remote host: sudo ansible-playbook ./docker.playbook.yml --extra-vars "target_host=[remote host]"
 
 - name: Install docker
   hosts: "{{ target_host | default('localhost') }}"

@@ -69,3 +69,7 @@ find "$SCRIPT_DIR/scripts" -type f -name "*.sh" -exec chmod +x {} \;
 
 # Install Docker
 "$SCRIPT_DIR/scripts/docker.install.sh"
+
+# Install DevToys
+# Disabled until DevToys runs happily on Ubunutu
+# "$SCRIPT_DIR/scripts/devtoys.install.sh"

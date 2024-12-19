@@ -6,4 +6,4 @@
 
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 
-sudo ansible-playbook $SCRIPT_DIR/../playbooks/sublime.text.playbook.yml
+sudo ansible-playbook $SCRIPT_DIR/../playbooks/sublime.text.playbook.yml 

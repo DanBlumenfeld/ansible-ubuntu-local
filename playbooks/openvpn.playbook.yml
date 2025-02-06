@@ -1,0 +1,68 @@
+# Description: This playbook installs and configures OpenVPN on Ubuntu
+# Variables:
+#   configfile          path to the .ovpn file
+#   vpn_config_name     Desired name of the conection
+#
+# Example on localhost:   sudo ansible-playbook ./openvpn.playbook.yml --extra-vars "configfile=~/home.ovpn vpn_config_name=home"
+
+---
+- name: Setup and Configure OpenVPN
+  hosts: localhost
+  become: true
+  vars:
+    configfile: ""  # The path to the .ovpn file
+    vpn_config_name: ""  # The desired name for the VPN connection
+  tasks:
+    - name: Validate that the .ovpn file path is provided
+      fail:
+        msg: "The variable 'configfile' must be provided and point to an existing file."
+      when: configfile == ""
+
+    - name: Validate that the VPN connection name is provided
+      fail:
+        msg: "The variable 'vpn_config_name' must be provided."
+      when: vpn_config_name == ""
+
+    - name: Install required OpenVPN packages
+      apt:
+        name:
+          - openvpn
+          - network-manager-openvpn
+          - network-manager-openvpn-gnome
+        state: present
+        update_cache: yes
+
+    - name: Ensure the VPN configuration directory exists
+      file:
+        path: "/etc/openvpn"
+        state: directory
+        mode: '0755'
+
+    - name: Copy the .ovpn file to the OpenVPN configuration directory
+      copy:
+        src: "{{ configfile }}"
+        dest: "/etc/openvpn/{{ vpn_config_name }}.ovpn"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Import the VPN configuration into NetworkManager
+      command: >
+        nmcli connection import type openvpn file /etc/openvpn/{{ vpn_config_name }}.ovpn
+      args:
+        creates: "/etc/NetworkManager/system-connections/{{ vpn_config_name }}"
+
+    - name: Restart NetworkManager to apply changes
+      systemd:
+        name: NetworkManager
+        state: restarted
+
+    - name: Provide instructions to enable the VPN connection
+      debug:
+        msg: |
+          The VPN configuration has been imported and the NetworkManager has been restarted.
+          To enable the VPN connection, follow these steps:
+          1. Enable the VPN connection:
+             nmcli connection up id "{{ vpn_config_name }}"
+          2. Verify the connection status using:
+             nmcli connection show --active

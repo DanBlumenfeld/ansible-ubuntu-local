@@ -1,0 +1,33 @@
+# Description: This playbook configures ssh locally
+#
+# Example usage against localhost: sudo ansible-playbook ./ssh.playbook.yml 
+
+- name: Enable SSH Server on Ubuntu
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Install OpenSSH Server
+      apt:
+        name: openssh-server
+        state: present
+        update_cache: yes
+
+    - name: Ensure SSH service is enabled and running
+      service:
+        name: ssh
+        state: started
+        enabled: yes
+
+    - name: Allow password authentication in SSH config
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication yes'
+        state: present
+        backup: yes
+
+    - name: Restart SSH service to apply changes
+      service:
+        name: ssh
+        state: restarted
+

@@ -98,3 +98,6 @@ fi
 
 # Install node and npm
 "$SCRIPT_DIR/scripts/npm.install.sh"
+
+# Configure SSH
+"$SCRIPT_DIR/scripts/ssh.install.sh"

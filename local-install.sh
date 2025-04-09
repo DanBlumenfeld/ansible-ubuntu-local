@@ -101,3 +101,6 @@ fi
 
 # Configure SSH
 "$SCRIPT_DIR/scripts/ssh.install.sh"
+
+# Install screen capture tools
+"$SCRIPT_DIR/scripts/screencap.install.sh"

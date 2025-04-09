@@ -1,0 +1,64 @@
+# Description: This playbook installs screen capture tools on Ubuntu
+# 
+# Example usage against localhost: sudo ansible-playbook ./1passwordscreencap.playbook.yml
+
+- name: Ensure ksnip and autokey-gtk are installed
+  apt:
+    name:
+      - ksnip
+      - autokey-gtk
+    state: present
+    update_cache: yes
+
+- name: Create AutoKey script directory
+  file:
+    path: "{{ ansible_user_dir }}/.config/autokey/data/LaunchKsnip"
+    state: directory
+    mode: '0755'
+
+- name: Create LaunchKsnip.json script
+  copy:
+    dest: "{{ ansible_user_dir }}/.config/autokey/data/LaunchKsnip/LaunchKsnip.json"
+    content: |
+      {
+        "usageCount": 0,
+        "omitTrigger": false,
+        "prompt": false,
+        "modes": ["app"],
+        "description": "Launch ksnip",
+        "abbreviation": {
+          "backspace": false,
+          "ignoreCase": false,
+          "immediate": false,
+          "triggerInside": false,
+          "wordChars": ""
+        },
+        "hotkey": {
+          "hotKey": "F12"
+        },
+        "showInTrayMenu": false,
+        "matchCase": false,
+        "filter": {
+          "regex": null,
+          "isRecursive": false,
+          "class": ""
+        },
+        "type": "script",
+        "name": "LaunchKsnip",
+        "script": "import subprocess\nsubprocess.Popen([\"ksnip\"])"
+      }
+    mode: '0644'
+
+- name: Ensure AutoKey autostarts on login
+  copy:
+    dest: "{{ ansible_user_dir }}/.config/autostart/autokey.desktop"
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Exec=autokey-gtk
+      Hidden=false
+      NoDisplay=false
+      X-GNOME-Autostart-enabled=true
+      Name=AutoKey
+      Comment=Start AutoKey on login
+    mode: '0644'

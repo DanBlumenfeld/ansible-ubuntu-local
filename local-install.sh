@@ -90,7 +90,7 @@ if [[ -n "${sublime_merge_repo}" ]]; then
 fi
 
 # Install Docker
-"$SCRIPT_DIR/scripts/docker.install.sh"
+"$SCRIPT_DIR/scripts/docker.install.sh" "$user"
 
 # Install DevToys
 # Disabled until DevToys runs happily on Ubunutu

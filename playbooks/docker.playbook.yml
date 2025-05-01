@@ -1,27 +1,58 @@
 # Description: This playbook installs docker and docker-compose on Ubuntu
 #
-# Example usage against localhost: sudo ansible-playbook ./docker.playbook.yml
-# Example usage against remote host: sudo ansible-playbook ./docker.playbook.yml --extra-vars "target_host=[remote host]"
+# Example usage against localhost: sudo ansible-playbook ./docker.playbook.yml --extra-vars "user=myuser"
+# Example usage against remote host: sudo ansible-playbook ./docker.playbook.yml --extra-vars "target_host=[remote host] user=myuser"
 
 - name: Install docker
   hosts: "{{ target_host | default('localhost') }}"
   become: true
+  pre_tasks:
+    - name: Ensure 'user' variable is defined
+      fail:
+        msg: "The 'user' variable is not defined. Please provide it using --extra-vars 'user=<username>'."
+      when: user is not defined
+
+    - name: Check if the specified user exists
+      command: id -u {{ user }}
+      register: user_check
+      failed_when: user_check.rc != 0
+      changed_when: false
+
+    - name: Ensure the specified user exists
+      fail:
+        msg: "The specified user '{{ user }}' does not exist on this system."
+      when: user_check.rc != 0
+
   tasks:
     - name: Add docker's GPG key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
+
     - name: Add docker repository
       apt_repository:
         repo: deb https://download.docker.com/linux/ubuntu bionic stable
         state: present
+
     - name: Install docker
       apt:
         name: docker-ce
         state: latest
         update_cache: yes
+
     - name: Install docker-compose
       apt:
         name: docker-compose
         state: latest
         update_cache: yes
+
+    - name: Ensure docker group exists
+      group:
+        name: docker
+        state: present
+
+    - name: Add user to docker group
+      user:
+        name: "{{ user }}"
+        groups: docker
+        append: yes

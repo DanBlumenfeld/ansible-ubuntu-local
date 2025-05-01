@@ -101,3 +101,6 @@ fi
 
 # Configure SSH
 "$SCRIPT_DIR/scripts/ssh.install.sh"
+
+# Configure bash
+"$SCRIPT_DIR/scripts/bash.config.sh" "$user"

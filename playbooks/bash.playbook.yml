@@ -1,0 +1,59 @@
+# Description: This playbook configures bash on Ubuntu
+# Variables:
+#   user         Ubuntu user for whom to configure the bash shell
+#
+# Example on localhost:   sudo ansible-playbook ./bash.playbook.yml --extra-vars "user=myuser"
+
+- name: configure bash shell
+  hosts: "{{ target_host | default('localhost') }}"
+  become: yes
+  vars:
+    bash_git_prompt_repo: "https://github.com/magicmonty/bash-git-prompt.git"    
+    bash_git_prompt_path: "/home/{{ user }}/.bash-git-prompt"    
+    bashrc_path: "/home/{{ user }}/.bashrc"    
+    bash_git_prompt_bashrc_snippet: |
+      if [ -f "$HOME/.bash-git-prompt/gitprompt.sh" ]; then
+        GIT_PROMPT_ONLY_IN_REPO=1
+        source "$HOME/.bash-git-prompt/gitprompt.sh"
+      fi
+
+  pre_tasks:
+    - name: Ensure 'user' variable is defined
+      fail:
+        msg: "The 'user' variable is not defined. Please provide it using --extra-vars 'user=<username>'."
+      when: user is not defined
+
+    - name: Check if the specified user exists
+      command: id -u {{ user }}
+      register: user_check
+      failed_when: user_check.rc != 0
+      changed_when: false
+
+    - name: Ensure the specified user exists
+      fail:
+        msg: "The specified user '{{ user }}' does not exist on this system."
+      when: user_check.rc != 0
+
+  tasks:
+    - name: Ensure git is installed      
+      package:
+       name: git        
+       state: present
+
+    - name: Clone bash-git-prompt repo      
+      git:        
+        repo: "{{ bash_git_prompt_repo }}"        
+        dest: "{{ bash_git_prompt_path }}"        
+        depth: 1        
+        update: yes        
+        version: master      
+      become_user: "{{ user }}"    
+      
+    - name: Ensure .bashrc contains bash-git-prompt snippet      
+      blockinfile:        
+        path: "{{ bashrc_path }}"        
+        marker: "# {mark} ANSIBLE MANAGED BLOCK: bash-git-prompt"        
+        content: "{{ bash_git_prompt_bashrc_snippet }}"        
+        owner: "{{ user }}"        
+        group: "{{ user }}"        
+        create: yes

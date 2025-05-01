@@ -1,0 +1,44 @@
+# Description: This playbook installs Flatpak on Ubuntu
+#
+# Example usage against localhost: sudo ansible-playbook ./flatpak.playbook.yml
+
+- name: Install Flatpak
+  hosts: "{{ target_host | default('localhost') }}"
+  become: true
+  
+  vars:
+    flatpak_remote_name: flathub
+    flatpak_remote_url: https://flathub.org/repo/flathub.flatpakrepo
+    flatpak_method: system
+    flatpak_themes:
+      - org.gtk.Gtk3theme.Yaru
+
+  tasks:
+    - name: Install Flatpak
+      ansible.builtin.apt:
+        name: flatpak
+        state: present
+
+    - name: Install Flatpak plugin for GNOME
+      ansible.builtin.apt:
+        name: gnome-software-plugin-flatpak
+        state: present
+
+    - name: Add Flathub remote if not already present
+      community.general.flatpak_remote:
+        name: "{{ flatpak_remote_name }}"
+        state: present
+        method: "{{ flatpak_method }}"
+        flatpakrepo_url: "{{ flatpak_remote_url }}"
+
+    - name: Update all Flatpak runtimes and apps
+      ansible.builtin.command:
+        cmd: flatpak update -y
+
+    - name: Install Flatpak GTK themes
+      community.general.flatpak:
+        name: "{{ item }}"
+        method: "{{ flatpak_method }}"
+        state: present
+      loop: "{{ flatpak_themes }}"
+

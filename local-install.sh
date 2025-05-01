@@ -104,3 +104,6 @@ fi
 
 # Configure bash
 "$SCRIPT_DIR/scripts/bash.config.sh" "$user"
+
+# Install Flatpak
+"$SCRIPT_DIR/scripts/flatpak.install.sh"

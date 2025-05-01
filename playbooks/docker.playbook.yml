@@ -56,3 +56,19 @@
         name: "{{ user }}"
         groups: docker
         append: yes
+
+    - name: Check if VS Code (code CLI) is installed
+      become_user: "{{ user }}"
+      shell: which code
+      register: code_check
+      ignore_errors: yes
+
+    - name: Install VS Code Docker extension as normal user
+      become_user: "{{ user }}"
+      shell: |
+        code --install-extension ms-azuretools.vscode-containers --force
+      args:
+        executable: /bin/bash
+      when: code_check.rc == 0
+
+

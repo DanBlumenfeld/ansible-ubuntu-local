@@ -8,7 +8,7 @@
   become: true
 
   vars:
-    flatpak_method: user
+    flatpak_method: system
     gimp_flatpak: org.gimp.GIMP
 
   tasks:
@@ -37,3 +37,10 @@
         name: ghostscript
         state: present
 
+    - name: Notify user to log out and log back in
+      ansible.builtin.assert:
+        that: true
+        success_msg: |
+          GIMP installation completed.
+          If you do not see the GIMP launcher in your application menu, please log out and log back in to refresh desktop environment application lists.
+          You can also run 'flatpak run org.gimp.GIMP' manually to launch GIMP.

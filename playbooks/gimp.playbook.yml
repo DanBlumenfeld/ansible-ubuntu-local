@@ -1,0 +1,39 @@
+# Description: This playbook installs Gimp on Ubuntu via Flatpak
+#
+# Example usage against localhost: sudo ansible-playbook ./gimpplaybook.yml
+# Example usage against remote host: sudo ansible-playbook ./gimp.playbook.yml --extra-vars "target_host=[remote host]"
+
+- name: Install Gimp 3
+  hosts: "{{ target_host | default('localhost') }}"
+  become: true
+
+  vars:
+    flatpak_method: user
+    gimp_flatpak: org.gimp.GIMP
+
+  tasks:
+
+    - name: Check if flatpak is installed
+      ansible.builtin.command: flatpak --version
+      register: flatpak_version
+      changed_when: false
+      ignore_errors: true
+
+    - name: Fail if flatpak is missing
+      ansible.builtin.fail:
+        msg: >
+          Flatpak is not installed or not found in PATH.
+      when: flatpak_version.rc != 0
+
+    - name: Install GIMP 3 via Flatpak
+      community.general.flatpak:
+        name: "{{ gimp_flatpak }}"
+        method: "{{ flatpak_method }}"
+        state: present
+
+    - name: Install ghostscript for extended format support
+      become: true
+      ansible.builtin.apt:
+        name: ghostscript
+        state: present
+

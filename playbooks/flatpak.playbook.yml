@@ -7,9 +7,7 @@
   become: true
   
   vars:
-    flatpak_remote_name: flathub
     flatpak_remote_url: https://flathub.org/repo/flathub.flatpakrepo
-    flatpak_method: system
     flatpak_themes:
       - org.gtk.Gtk3theme.Yaru
 
@@ -26,10 +24,18 @@
 
     - name: Add Flathub remote if not already present
       community.general.flatpak_remote:
-        name: "{{ flatpak_remote_name }}"
+        name: flathub
         state: present
-        method: "{{ flatpak_method }}"
+        method: system
         flatpakrepo_url: "{{ flatpak_remote_url }}"
+
+    - name: Add Flathub remote for user installs too
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        method: user
+        flatpakrepo_url: "{{ flatpak_remote_url }}"
+
 
     - name: Update all Flatpak runtimes and apps
       ansible.builtin.command:
@@ -38,7 +44,14 @@
     - name: Install Flatpak GTK themes
       community.general.flatpak:
         name: "{{ item }}"
-        method: "{{ flatpak_method }}"
+        method: system
+        state: present
+      loop: "{{ flatpak_themes }}"
+
+    - name: Install Flatpak GTK themes for users
+      community.general.flatpak:
+        name: "{{ item }}"
+        method: user
         state: present
       loop: "{{ flatpak_themes }}"
 

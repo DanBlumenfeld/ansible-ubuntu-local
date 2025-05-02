@@ -107,3 +107,6 @@ fi
 
 # Install Flatpak
 "$SCRIPT_DIR/scripts/flatpak.install.sh"
+
+# Install Gimp
+"$SCRIPT_DIR/scripts/gimp.install.sh"

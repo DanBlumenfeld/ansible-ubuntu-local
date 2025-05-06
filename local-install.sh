@@ -110,3 +110,9 @@ fi
 
 # Install Gimp
 "$SCRIPT_DIR/scripts/gimp.install.sh"
+
+# Install Handbrake
+"$SCRIPT_DIR/scripts/handbrake.install.sh"
+
+# Install MakeMKV
+"$SCRIPT_DIR/scripts/makemkv.install.sh"

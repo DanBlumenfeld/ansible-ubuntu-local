@@ -1,0 +1,40 @@
+# Description: This playbook installs MakeMKV on Ubuntu via Flatpak
+#
+# Example usage against localhost: sudo ansible-playbook ./makemkv.playbook.yml
+# Example usage against remote host: sudo ansible-playbook ./makemkv.playbook.yml --extra-vars "target_host=[remote host]"
+
+- name: Install MakeMKV
+  hosts: "{{ target_host | default('localhost') }}"
+  become: true
+
+  vars:
+    flatpak_method: system
+    makemkv_flatpak: com.makemkv.MakeMKV
+
+  tasks:
+
+    - name: Check if flatpak is installed
+      ansible.builtin.command: flatpak --version
+      register: flatpak_version
+      changed_when: false
+      ignore_errors: true
+
+    - name: Fail if flatpak is missing
+      ansible.builtin.fail:
+        msg: >
+          Flatpak is not installed or not found in PATH.
+      when: flatpak_version.rc != 0
+
+    - name: Install MakeMKV via Flatpak
+      community.general.flatpak:
+        name: "{{ makemkv_flatpak }}"
+        method: "{{ flatpak_method }}"
+        state: present
+
+    - name: Notify user to log out and log back in
+      ansible.builtin.assert:
+        that: true
+        success_msg: |
+          MakeMKV installation completed.
+          If you do not see the MakeMkv launcher in your application menu, please log out and log back in to refresh desktop environment application lists.
+          You can also run 'flatpak run com.makemkv.MakeMKV' manually to launch it.

@@ -1,0 +1,40 @@
+# Description: This playbook installs VLC on Ubuntu via Flatpak
+#
+# Example usage against localhost: sudo ansible-playbook ./vlc.playbook.yml
+# Example usage against remote host: sudo ansible-playbook ./vlc.playbook.yml --extra-vars "target_host=[remote host]"
+
+- name: Install VLC
+  hosts: "{{ target_host | default('localhost') }}"
+  become: true
+
+  vars:
+    flatpak_method: system
+    vlc_flatpak: org.videolan.VLC
+
+  tasks:
+
+    - name: Check if flatpak is installed
+      ansible.builtin.command: flatpak --version
+      register: flatpak_version
+      changed_when: false
+      ignore_errors: true
+
+    - name: Fail if flatpak is missing
+      ansible.builtin.fail:
+        msg: >
+          Flatpak is not installed or not found in PATH.
+      when: flatpak_version.rc != 0
+
+    - name: Install VLC via Flatpak
+      community.general.flatpak:
+        name: "{{ vlc_flatpak }}"
+        method: "{{ flatpak_method }}"
+        state: present
+
+    - name: Notify user to log out and log back in
+      ansible.builtin.assert:
+        that: true
+        success_msg: |
+          VLC installation completed.
+          If you do not see the launcher in your application menu, please log out and log back in to refresh desktop environment application lists.
+          You can also run 'flatpak run org.videolan.VLC' manually to launch it.

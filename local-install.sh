@@ -116,3 +116,6 @@ fi
 
 # Install MakeMKV
 "$SCRIPT_DIR/scripts/makemkv.install.sh"
+
+# Install VLC
+"$SCRIPT_DIR/scripts/vlc.install.sh"

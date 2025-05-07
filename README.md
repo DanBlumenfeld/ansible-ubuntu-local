@@ -29,7 +29,6 @@ I'm an utter Ansible novice, and not terribly well versed with shell scripting e
 
 ## Next Steps
 - Screen capture tool TBD
-- GIMP
 - Lock down/harden system TBD
 - Look for way to set Tor Browser as system default
 - Look at 1Password for VS Code https://developer.1password.com/docs/vscode

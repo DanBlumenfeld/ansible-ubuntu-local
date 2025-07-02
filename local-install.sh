@@ -119,3 +119,6 @@ fi
 
 # Install VLC
 "$SCRIPT_DIR/scripts/vlc.install.sh"
+
+# Install ADB
+"$SCRIPT_DIR/scripts/adb.install.sh"

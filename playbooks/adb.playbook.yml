@@ -1,0 +1,16 @@
+# Description: This playbook installs and configures adb (Android Debug Bridge) on Ubuntu
+#
+# Example on localhost:   sudo ansible-playbook ./adb.playbook.yml
+
+- name: Install ADB on Ubuntu
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install adb
+      apt:
+        name: adb
+        state: present

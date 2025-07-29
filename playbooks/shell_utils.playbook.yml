@@ -1,0 +1,16 @@
+# Description: This playbook installs avarious shell utilities on Ubuntu
+#
+# Example on localhost:   sudo ansible-playbook ./shell_utils.playbook.yml
+
+- name: Install utilities on Ubuntu
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install yq
+      apt:
+        name: yq
+        state: present

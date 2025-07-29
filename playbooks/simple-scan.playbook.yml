@@ -1,0 +1,14 @@
+# Description: This playbook installs Simple-Scan on Ubuntu via Flatpak
+#
+# Example usage against localhost: sudo ansible-playbook ./simple-scan.playbook.yml
+# Example usage against remote host: sudo ansible-playbook ./simple-scan.playbook.yml --extra-vars "target_host=[remote host]"
+
+- name: Install Simple-Scan
+  hosts: "{{ target_host | default('localhost') }}"
+  become: true
+
+  tasks:
+    - name: Install Simple-Scan
+      ansible.builtin.apt:
+        name: simple-scan
+        state: present

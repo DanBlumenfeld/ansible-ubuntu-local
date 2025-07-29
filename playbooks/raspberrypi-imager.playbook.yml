@@ -1,0 +1,16 @@
+# Description: This playbook installs and configures The Raspberry Pi Imager on Ubuntu
+#
+# Example on localhost:   sudo ansible-playbook ./raspberrypi-imager.playbook.yml
+
+- name: Install Raspberry Pi Imager on Ubuntu
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install raspberrypi-imager
+      apt:
+        name: rpi-imager
+        state: present

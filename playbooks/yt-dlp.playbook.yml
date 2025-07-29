@@ -1,0 +1,24 @@
+# Description: This playbook installs yt-dlp on Ubuntu via Flatpak
+#
+# Example usage against localhost: sudo ansible-playbook ./yt-dlp.playbook.yml
+# Example usage against remote host: sudo ansible-playbook ./yt-dlp.playbook.yml --extra-vars "target_host=[remote host]"
+
+- name: Install yt-dlp
+  hosts: "{{ target_host | default('localhost') }}"
+  become: true
+
+  tasks:
+
+    - name: Add the PPA for yt-dlp
+      ansible.builtin.apt_repository:
+        repo: ppa:tomtomtom/yt-dlp
+        state: present
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install yt-dlp
+      ansible.builtin.apt:
+        name: yt-dlp
+        state: present

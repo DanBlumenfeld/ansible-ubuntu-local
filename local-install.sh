@@ -122,3 +122,15 @@ fi
 
 # Install ADB
 "$SCRIPT_DIR/scripts/adb.install.sh"
+
+# Install shell utilities
+"$SCRIPT_DIR/scripts/shell_utilities.install.sh"
+
+# Install Raspberry Pi Imager
+"$SCRIPT_DIR/scripts/raspberrypi-imager.install.sh"
+
+# Install yt-dlp
+"$SCRIPT_DIR/scripts/yt-dlp.install.sh"
+
+# Install Simple Scan
+"$SCRIPT_DIR/scripts/simple-scan.install.sh"

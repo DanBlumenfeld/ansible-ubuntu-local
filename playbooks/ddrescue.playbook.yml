@@ -1,0 +1,16 @@
+# Description: This playbook installs and configures ddrescue on Ubuntu
+#
+# Example on localhost:   sudo ansible-playbook ./ddrescue.playbook.yml
+
+- name: Install ddrescue on Ubuntu
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install ddrescue
+      apt:
+        name: gddrescue
+        state: present

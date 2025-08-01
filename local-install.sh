@@ -134,3 +134,6 @@ fi
 
 # Install Simple Scan
 "$SCRIPT_DIR/scripts/simple-scan.install.sh"
+
+# Install ddrescue
+"$SCRIPT_DIR/scripts/ddrescue.install.sh"

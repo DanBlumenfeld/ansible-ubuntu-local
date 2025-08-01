@@ -33,10 +33,7 @@ I'm an utter Ansible novice, and not terribly well versed with shell scripting e
 - Look for way to set Tor Browser as system default
 - Look at 1Password for VS Code https://developer.1password.com/docs/vscode
 - Look at Devtools CLI
-
-Separate/optional packages, not part of default install
- - Fujitsu ScanSnap
- - Brother QL-700
+- Brother QL-700
 
 DevToys for Linux seems flaky...needs sudo, throws warnings in console. Figure out resolution (that doesn't involve running as root) and reenable then.
 

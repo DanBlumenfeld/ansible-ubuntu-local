@@ -1,0 +1,21 @@
+# Description: This playbook installs JetBrains Rider on Ubuntu via Snap
+#
+# Example usage against localhost: sudo ansible-playbook ./jetbrains-rider.playbook.yml
+# Example usage against remote host: sudo ansible-playbook ./jetbrains-rider.playbook.yml --extra-vars "target_host=[remote host]"
+
+- name: Install JetBrains Rider on Ubuntu
+  hosts: "{{ target_host | default('localhost') }}"
+  become: true
+
+  tasks:
+    - name: Ensure snapd is installed
+      apt:
+        name: snapd
+        state: present
+        update_cache: yes
+
+    - name: Install JetBrains Rider via snap (silent)
+      snap:
+        name: rider
+        classic: yes
+        state: present

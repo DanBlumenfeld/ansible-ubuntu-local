@@ -105,6 +105,9 @@ fi
 # Configure bash
 "$SCRIPT_DIR/scripts/bash.config.sh" "$user"
 
+# Install Python
+"$SCRIPT_DIR/scripts/python.install.sh"
+
 # Install Flatpak
 "$SCRIPT_DIR/scripts/flatpak.install.sh"
 
@@ -137,3 +140,6 @@ fi
 
 # Install ddrescue
 "$SCRIPT_DIR/scripts/ddrescue.install.sh"
+
+# Install JetBrains Rider
+"$SCRIPT_DIR/scripts/jetbrains-rider.install.sh"

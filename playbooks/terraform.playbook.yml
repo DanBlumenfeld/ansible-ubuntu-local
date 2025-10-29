@@ -1,0 +1,49 @@
+# Installs Terraform on Ubuntu using the official HashiCorp APT repository.
+#
+# Example (localhost): sudo ansible-playbook ./terraform.playbook.yml
+# Example (remote):    sudo ansible-playbook ./terraform.playbook.yml --extra-vars "target_host=[remote host]"
+
+- name: Install Terraform
+  hosts: "{{ target_host | default('localhost') }}"
+  become: true
+  vars:
+    hashicorp_keyring: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+    hashicorp_repo_file: /etc/apt/sources.list.d/hashicorp.list
+
+  tasks:
+    - name: Ensure prerequisites are present
+      ansible.builtin.apt:
+        name:
+          - curl
+          - gpg
+          - lsb-release
+        state: present
+        update_cache: yes
+
+    - name: Add the key for the HashiCorp apt repository
+      ansible.builtin.shell: |
+        curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor --output {{ hashicorp_keyring }}
+      args:
+        creates: "{{ hashicorp_keyring }}"
+
+    - name: Add the HashiCorp apt repository
+      ansible.builtin.shell: |
+        echo "deb [arch=$(dpkg --print-architecture) signed-by={{ hashicorp_keyring }}] https://apt.releases.hashicorp.com $(lsb_release -cs) main" \
+          | tee {{ hashicorp_repo_file }}
+      args:
+        creates: "{{ hashicorp_repo_file }}"
+
+    - name: Update APT repository and install Terraform
+      ansible.builtin.apt:
+        update_cache: yes
+        name: terraform
+        state: present
+
+    - name: Verify Terraform installation
+      ansible.builtin.command: terraform -version
+      register: tf_version
+      changed_when: false
+
+    - name: Show Terraform version
+      ansible.builtin.debug:
+        var: tf_version.stdout

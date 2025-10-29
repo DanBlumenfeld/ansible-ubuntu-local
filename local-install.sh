@@ -143,3 +143,6 @@ fi
 
 # Install JetBrains Rider
 "$SCRIPT_DIR/scripts/jetbrains-rider.install.sh"
+
+# Install Terraform
+"$SCRIPT_DIR/scripts/terraform.install.sh"

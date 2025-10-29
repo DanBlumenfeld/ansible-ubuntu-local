@@ -18,6 +18,8 @@ sudo apt update
 sudo apt install -y software-properties-common
 sudo add-apt-repository --yes --update ppa:ansible/ansible
 sudo apt install -y "$PROGRAM"
+sudo apt install -y ansible-lint
+ansible-galaxy collection install ansible.posix
 
 # Confirm installation
 if $SCRIPT_DIR//util/check_is_installed.sh "$PROGRAM"; then

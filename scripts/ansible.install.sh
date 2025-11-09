@@ -33,17 +33,33 @@ install_ansible_system() {
 }
 
 ensure_ansible_dev_tools() {
-  # Make sure ~/.local/bin is visible right now
   export PATH="$HOME/.local/bin:$PATH"
 
-  if ! pipx list | grep -q "^package ansible-dev-tools"; then
-    echo "Installing ansible-dev-tools with pipx…"
-    pipx install ansible-dev-tools
-  else
-    echo "Upgrading ansible-dev-tools with pipx…"
-    pipx upgrade ansible-dev-tools || true
-  fi
+  tools=(
+    ansible-lint
+    molecule
+    ansible-navigator
+    ansible-builder
+    ansible-creator
+    ansible-sign
+    pytest-ansible
+    tox-ansible
+    ansible-dev-environment
+  )
+
+  for t in "${tools[@]}"; do
+    if pipx list | grep -q "package $t "; then
+      echo "pipx upgrade $t"
+      pipx upgrade "$t" || true
+    else
+      echo "pipx install $t"
+      pipx install "$t"
+    fi
+  done
+
+  which ansible-lint || echo "WARN: ansible-lint not on PATH; ensure ~/.local/bin is exported."
 }
+
 
 # --- main ------------------------------------------------------------------
 # Ensure pipx exists (and Python/venv if needed) by delegating to the companion script

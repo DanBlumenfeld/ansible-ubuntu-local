@@ -146,3 +146,6 @@ fi
 
 # Install Terraform
 "$SCRIPT_DIR/scripts/terraform.install.sh"
+
+# Install CUE
+"$SCRIPT_DIR/scripts/cue.install.sh"

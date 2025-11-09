@@ -1,0 +1,56 @@
+# Description: Installs CUE on Ubuntu
+#
+# Example (localhost): sudo ansible-playbook ./cue.playbook.yml
+# Example (remote):    sudo ansible-playbook ./cue.playbook.yml --extra-vars "target_host=[remote host]"
+
+- name: Install CUE
+  hosts: "{{ target_host | default('localhost') }}"
+  become: true
+
+  vars:
+    cue_release: "https://github.com/cue-lang/cue/releases/download/v0.15.0/cue_v0.15.0_linux_amd64.tar.gz"
+    cue_checksum: "sha256:06925fc1e5174591cef0b1e42ac32cff4271804742cd20893de1793b6d82d460"
+    cue_extract_dir: "/usr/local/src/cue"
+    cue_archive: "{{ cue_extract_dir }}/cue.tar.gz"
+
+  tasks:
+    - name: "Ensure extract dir is clean"
+      file:
+        path: "{{ cue_extract_dir }}"
+        state: absent
+
+    - name: "Create extract dir"
+      file:
+        path: "{{ cue_extract_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: "Download CUE {{ cue_release | basename }}"
+      get_url:
+        url: "{{ cue_release }}"
+        dest: "{{ cue_archive }}"
+        mode: "0644"
+        checksum: "{{ cue_checksum }}"
+
+    - name: "Unpack CUE"
+      unarchive:
+        src: "{{ cue_archive }}"
+        dest: "{{ cue_extract_dir }}"
+        remote_src: true
+
+    - name: "Install cue -> /usr/local/bin"
+      copy:
+        src: "{{ cue_extract_dir }}/cue"
+        dest: "/usr/local/bin/cue"
+        mode: "0755"
+        owner: root
+        group: root
+
+    - name: "Verify cue version"
+      command: cue version
+      register: cue_ver
+      changed_when: false
+
+    - name: "Show installed cue version"
+      debug:
+        msg: "{{ cue_ver.stdout }}"
